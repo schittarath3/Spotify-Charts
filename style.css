@@ -1,0 +1,76 @@
+body {
+    font-family: "Open Sans";
+    background-color: rgb(10, 10, 10);
+    zoom: 0.9;
+}
+
+#main {
+    margin: 10px 20px;
+}
+
+text {
+    fill: whitesmoke;
+}
+
+.grid path, .grid line, .y_axis line, .y_axis path, .x_axis line, .x_axis path{
+    stroke: rgb(72, 72, 72)
+}
+
+.y_axis text {
+    text-anchor: end;
+}
+
+text.label {
+    text-anchor: middle;
+    font-size: 11px;
+}
+
+text.title {
+    text-anchor: middle;
+    font-size: 14px;
+}
+
+circle {
+    fill: aqua;
+    opacity: 0.75;
+}
+
+text {
+    font-size: smaller;
+    font-family: 'Gotham Rounded', sans-serif;
+    text-anchor: middle;
+}
+
+g:hover text{
+    visibility: visible;
+}
+
+path.hide {
+    opacity: 0.2;
+}
+
+path.show {
+    opacity: 1;
+}
+
+.sliderLabel {
+    color: whitesmoke;
+    padding-bottom: 20pt;
+}
+
+.feature text {
+    text-anchor: start;
+}
+
+p {
+    font-family: 'Gotham Rounded', sans-serif;
+}
+
+div.noUi-target {
+    border: 0px;
+    font-family: 'Gotham Rounded', sans-serif;
+}
+div.noUi-connect {
+    background: #1DB954;
+}
+
