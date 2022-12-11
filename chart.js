@@ -54,8 +54,8 @@ var data;
 var colorMapping;
 var artistFeatures;
 
-d3.csv('data/dataframes/monthly_data.csv').then(function(dataset) {
-    d3.csv("data/dataframes/artist_track_features.csv").then(function(feature_data) {
+d3.csv('clean/data/dataframes/monthly_data.csv').then(function(dataset) {
+    d3.csv("clean/data/dataframes/artist_track_features.csv").then(function(feature_data) {
         data = dataset;
         artistFeatures = {}
         feature_data.forEach(d => {
