@@ -14,6 +14,8 @@ Dependencies
 
 Download your Spotify streaming data by signing into your account at [Spotify][https://accounts.spotify.com/] and going to Privacy Settings>Download your data>Account data. You can download your extended streaming data too, but it takes longer to retrieve.
 
+Setup your Spotify Developer account, navigate to the dashboard, and create an app. From here, retrieve your **Client ID** and **Client Secret**. In the .env file, copy these keys over to the respective environment variables. 
+
 Once you downloaded your streaming data, unzip the file, and drop the .csv files into clean/data/history.
 
 Run through the cells in `clean/clean_data.ipynb`.
