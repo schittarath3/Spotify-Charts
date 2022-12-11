@@ -12,13 +12,16 @@ from dateutil.relativedelta import relativedelta
 auth_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
+
 def load_file(file: str) -> list:
+    "Loads streaming history file"
     with open(file) as f:
         tracks = json.load(f)
         return tracks
 
 
 def cat_files() -> list:
+    "Loads streaming history files and concatenates into one list"
     data = glob.glob("data/history/*")
     data.sort()
     songs = []
@@ -29,6 +32,7 @@ def cat_files() -> list:
 
 
 def get_track_uri(artistName: str, trackName: str) -> str:
+    "Attempts to a track's URI from spotify using the artist name and track name"
     _type = "track"
     limit = 1
     q = f"artist:{artistName} track:{trackName}"
@@ -40,6 +44,7 @@ def get_track_uri(artistName: str, trackName: str) -> str:
 
 
 def get_unique_songs(songs: list) -> set:
+    "Returns unique songs from list"
     unq_songs = set(
         [(s["artistName"], s["trackName"]) for s in songs]
         )
@@ -47,6 +52,7 @@ def get_unique_songs(songs: list) -> set:
 
 
 def get_uri_mapping(songs: set) -> dict:
+    "Maps (artistNames, tracKName) to its URI"
     songs = list(songs)
     uri_map = {}
     for i, s in enumerate(songs):
@@ -59,6 +65,7 @@ def get_uri_mapping(songs: set) -> dict:
 
 
 def get_features(uris: list) -> dict:
+    "Gets a track's audio feature from spotify"
     L = len(uris)
     feature_mapping = {}
     for i in range(0, L, 100):
@@ -69,6 +76,7 @@ def get_features(uris: list) -> dict:
     return feature_mapping
 
 def mappings_to_csv(uri_map: dict, features_map: dict, stream_times: dict) -> pd.DataFrame:
+    "Saves track audio features to a csv"
     bad_keys = ["id", "uri", "track_href", "analysis_url", "type"]
     features_keys = list(features_map.values())[0].keys()
     features_keys = [k for k in features_keys if k not in bad_keys]
@@ -97,6 +105,7 @@ def mappings_to_csv(uri_map: dict, features_map: dict, stream_times: dict) -> pd
     return track_df
 
 def total_listen_time(stream_data: list, uri_map: dict) -> dict:
+    "Saves total listen time to a csv"
     stream_time = {}
     for s in stream_data:
         uri = uri_map.get((s["artistName"], s["trackName"]), None)
@@ -111,6 +120,7 @@ def total_listen_time(stream_data: list, uri_map: dict) -> dict:
 
 
 def stream_time_to_csv(stream_times: list, uri_map: dict) -> pd.DataFrame:
+    "Saves cleaned streaming history to a csv"
     artists = []
     tracks = []
     uris = []
@@ -137,6 +147,7 @@ def stream_time_to_csv(stream_times: list, uri_map: dict) -> pd.DataFrame:
 
 
 def combine_feature_stream(feature_df: pd.DataFrame, stream_df: pd.DataFrame) -> pd.DataFrame:
+    "Combines track features and streaming history into a flat csv"
     combined_df = stream_df.join(feature_df.set_index('uri'), on='uri', rsuffix="_feature")
     combined_df.drop(["artist_feature", "track_feature"], axis="columns", inplace=True)
     combined_df["time"] = pd.to_datetime(combined_df["time"])
@@ -147,6 +158,7 @@ def combine_feature_stream(feature_df: pd.DataFrame, stream_df: pd.DataFrame) ->
 
 
 def monthy_artist_metrics(combined_df: pd.DataFrame) -> pd.DataFrame:
+    "Creates a csv with how much each artist is played per month"
     # Remove artist that have been listened to once or twice
     discovery = [combined_df.artist.value_counts() < 100][0]
     not_discovery_artist = [artist for artist, value in zip(discovery.index, discovery.values) if bool(value) is False]
@@ -167,6 +179,7 @@ def monthy_artist_metrics(combined_df: pd.DataFrame) -> pd.DataFrame:
     return monthly_df
 
 def artist_detail_metrics(combined_df: pd.DataFrame, k: int = 5) -> pd.DataFrame:
+    "Averages track features based on artist"
     FEATURE_COLS = ["danceability", "energy", "loudness", "speechiness", \
         "acousticness", "instrumentalness", "liveness", "valence", "tempo"]
     agg_data = combined_df.groupby(["artist"], as_index=False)[FEATURE_COLS].mean()
